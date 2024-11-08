@@ -1,9 +1,7 @@
 /*
-** © 2009-2017 by Kornel Lesiński.
-** © 1989, 1991 by Jef Poskanzer.
-** © 1997, 2000, 2002 by Greg Roelofs; based on an idea by Stefan Schneider.
-**
-** See COPYRIGHT file for license.
+** © 2011-2015 by Kornel Lesiński.
+** All rights reserved.
+** See COPYRIGHT file for full license.
 */
 
 #include "libimagequant.h"
@@ -21,7 +19,7 @@ struct mempool {
     void (*free)(void*);
     struct mempool *next;
 };
-LIQ_PRIVATE void* mempool_create(mempoolptr *mptr, const unsigned int size, unsigned int max_size, void* (*malloc)(size_t), void (*free)(void*))
+LIQ_PRIVATE void* mempool_create(mempool *mptr, const unsigned int size, unsigned int max_size, void* (*malloc)(size_t), void (*free)(void*))
 {
     if (*mptr && ((*mptr)->used+size) <= (*mptr)->size) {
         unsigned int prevused = (*mptr)->used;
@@ -29,7 +27,7 @@ LIQ_PRIVATE void* mempool_create(mempoolptr *mptr, const unsigned int size, unsi
         return ((char*)(*mptr)) + prevused;
     }
 
-    mempoolptr old = *mptr;
+    mempool old = *mptr;
     if (!max_size) max_size = (1<<17);
     max_size = size+ALIGN_MASK > max_size ? size+ALIGN_MASK : max_size;
 
@@ -49,7 +47,7 @@ LIQ_PRIVATE void* mempool_create(mempoolptr *mptr, const unsigned int size, unsi
     return mempool_alloc(mptr, size, size);
 }
 
-LIQ_PRIVATE void* mempool_alloc(mempoolptr *mptr, const unsigned int size, const unsigned int max_size)
+LIQ_PRIVATE void* mempool_alloc(mempool *mptr, unsigned int size, unsigned int max_size)
 {
     if (((*mptr)->used+size) <= (*mptr)->size) {
         unsigned int prevused = (*mptr)->used;
@@ -60,10 +58,10 @@ LIQ_PRIVATE void* mempool_alloc(mempoolptr *mptr, const unsigned int size, const
     return mempool_create(mptr, size, max_size, (*mptr)->malloc, (*mptr)->free);
 }
 
-LIQ_PRIVATE void mempool_destroy(mempoolptr m)
+LIQ_PRIVATE void mempool_destroy(mempool m)
 {
     while (m) {
-        mempoolptr next = m->next;
+        mempool next = m->next;
         m->free(m);
         m = next;
     }

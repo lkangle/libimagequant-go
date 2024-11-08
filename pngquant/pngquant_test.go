@@ -2,14 +2,15 @@ package pngquant
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/assert"
 	"image/png"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLibVersion(t *testing.T) {
-	assert.Equal(t, LibVersion(), "2.12.2")
+	assert.Equal(t, LibVersion(), "2.4.1")
 }
 
 func TestCompress(t *testing.T) {

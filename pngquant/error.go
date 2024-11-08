@@ -11,7 +11,7 @@ var (
 	ErrQualityTooLow      = errors.New("Quality too low")
 	ErrValueOutOfRange    = errors.New("Value out of range")
 	ErrOutOfMemory        = errors.New("Out of memory")
-	ErrAborted            = errors.New("Aborted")
+	ErrNotReady           = errors.New("LIQ_NOT_READY")
 	ErrBitmapNotAvailable = errors.New("Bitmap not available")
 	ErrBufferTooSmall     = errors.New("Buffer too small")
 	ErrInvalidPointer     = errors.New("Invalid pointer")
@@ -28,8 +28,8 @@ func translateError(iqe C.liq_error) error {
 		return ErrValueOutOfRange
 	case (C.LIQ_OUT_OF_MEMORY):
 		return ErrOutOfMemory
-	case (C.LIQ_ABORTED):
-		return ErrAborted
+	case (C.LIQ_NOT_READY):
+		return ErrNotReady
 	case (C.LIQ_BITMAP_NOT_AVAILABLE):
 		return ErrBitmapNotAvailable
 	case (C.LIQ_BUFFER_TOO_SMALL):

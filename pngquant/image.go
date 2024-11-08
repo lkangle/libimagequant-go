@@ -1,8 +1,9 @@
 package pngquant
 
 import (
-	"github.com/pkg/errors"
 	"unsafe"
+
+	"github.com/pkg/errors"
 )
 
 /*
@@ -41,7 +42,7 @@ func (i *Image) Quantize(attr *Attributes) (*Result, error) {
 	res := Result{
 		im: i,
 	}
-	err := C.liq_image_quantize(i.p, attr.p, &res.p)
+	err := C.liq_quantize_image_e(attr.p, i.p, &res.p)
 	if err != C.LIQ_OK {
 		return nil, translateError(err)
 	}
