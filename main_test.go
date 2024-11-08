@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"image/png"
 	"os"
+	"testing"
 
 	"github.com/lkangle/libimagequant-go/pngquant"
 )
 
-func main() {
+func TestMain(t *testing.T) {
 	source, err := os.OpenFile("./testdata/head.png", os.O_RDONLY, 0444)
 	if err != nil {
 		fmt.Println(err.Error())
