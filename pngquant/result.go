@@ -21,13 +21,16 @@ func (r *Result) Release() {
 	C.liq_result_destroy(r.p)
 }
 
-func (r *Result) WriteRemappedImage() ([]byte, error) {
+func (r *Result) WriteRemappedImage(floyd float32) ([]byte, error) {
 	if r.im.released {
 		return nil, ErrUseAfterFree
 	}
 
 	buffSize := r.im.w * r.im.h
 	buff := make([]byte, buffSize)
+
+	C.liq_set_output_gamma(r.p, 0.45455)
+	C.liq_set_dithering_level(r.p, C.float(floyd))
 
 	iqe := C.liq_write_remapped_image(r.p, r.im.p, unsafe.Pointer(&buff[0]), C.size_t(buffSize))
 	if iqe != C.LIQ_OK {
