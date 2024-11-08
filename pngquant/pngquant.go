@@ -7,7 +7,7 @@ import "image"
 */
 import "C"
 
-func Compress(img image.Image, quality int, speed int) (image.Image, error) {
+func Compress(img image.Image, quality int, speed int, floyd float32) (image.Image, error) {
 	width := img.Bounds().Max.X
 	height := img.Bounds().Max.Y
 
@@ -40,7 +40,7 @@ func Compress(img image.Image, quality int, speed int) (image.Image, error) {
 	defer res.Release()
 
 	// get RBG8 data from compressed image
-	rgb8data, err := res.WriteRemappedImage()
+	rgb8data, err := res.WriteRemappedImage(floyd)
 	if err != nil {
 		return nil, err
 	}

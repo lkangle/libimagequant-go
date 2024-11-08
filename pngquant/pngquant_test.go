@@ -20,7 +20,7 @@ func TestCompress(t *testing.T) {
 	img, err := png.Decode(source)
 	assert.NoError(t, err)
 
-	output1, err := Compress(img, 70, SPEED_DEFAULT)
+	output1, err := Compress(img, 70, SPEED_DEFAULT, 1.)
 	assert.NoError(t, err)
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, output1); err != nil {
@@ -29,7 +29,7 @@ func TestCompress(t *testing.T) {
 	outputSize1 := int64(len(buf.Bytes()))
 	assert.True(t, outputSize1 < stat.Size())
 
-	output2, err := Compress(img, 60, SPEED_DEFAULT)
+	output2, err := Compress(img, 60, SPEED_DEFAULT, 1.)
 	assert.NoError(t, err)
 	buf = new(bytes.Buffer)
 	if err := png.Encode(buf, output2); err != nil {

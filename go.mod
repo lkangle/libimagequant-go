@@ -1,4 +1,4 @@
-module github.com/lkangle/libimagequant
+module github.com/lkangle/libimagequant-go
 
 go 1.23.2
 
