@@ -11,7 +11,7 @@ import (
 )
 
 func TestMain(t *testing.T) {
-	source, err := os.OpenFile("./testdata/head.png", os.O_RDONLY, 0444)
+	source, err := os.OpenFile("./testdata/bg.png", os.O_RDONLY, 0444)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -29,8 +29,11 @@ func TestMain(t *testing.T) {
 		return
 	}
 
+	enc := png.Encoder{
+		CompressionLevel: png.DefaultCompression,
+	}
 	buf := new(bytes.Buffer)
-	if err := png.Encode(buf, output1); err != nil {
+	if err := enc.Encode(buf, output1); err != nil {
 		fmt.Println(err.Error())
 		return
 	}

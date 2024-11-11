@@ -42,10 +42,11 @@ func (i *Image) Quantize(attr *Attributes) (*Result, error) {
 	res := Result{
 		im: i,
 	}
-	err := C.liq_quantize_image_e(attr.p, i.p, &res.p)
-	if err != C.LIQ_OK {
-		return nil, translateError(err)
+	r := C.liq_quantize_image(attr.p, i.p)
+	if r == nil {
+		return nil, ErrInvalidPointer
 	}
 
+	res.p = r
 	return &res, nil
 }

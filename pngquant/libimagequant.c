@@ -3,7 +3,7 @@
 ** Copyright (C) 1989, 1991 by Jef Poskanzer.
 ** Copyright (C) 1997, 2000, 2002 by Greg Roelofs; based on an idea by
 **                                Stefan Schneider.
-** © 2009-2015 by Kornel Lesinski.
+** © 2009-2013 by Kornel Lesinski.
 **
 ** Permission to use, copy, modify, and distribute this software and its
 ** documentation for any purpose and without fee is hereby granted, provided
@@ -767,28 +767,6 @@ LIQ_EXPORT liq_result *liq_quantize_image(liq_attr *attr, liq_image *img)
     return result;
 }
 
-LIQ_EXPORT liq_error liq_quantize_image_e(liq_attr *attr, liq_image *img, liq_result **result_output)
-{
-    if (!CHECK_STRUCT_TYPE(attr, liq_attr))
-        return LIQ_INVALID_POINTER;
-    if (!CHECK_STRUCT_TYPE(img, liq_image)) {
-        liq_log_error(attr, "invalid image pointer");
-        return LIQ_INVALID_POINTER;
-    }
-
-    histogram *hist = get_histogram(img, attr);
-    if (!hist) {
-        return LIQ_OUT_OF_MEMORY;
-    }
-
-    liq_result *result = pngquant_quantize(hist, attr, img);
-
-    *result_output = result;
-
-    pam_freeacolorhist(hist);
-    return LIQ_OK;
-}
-
 LIQ_EXPORT liq_error liq_set_dithering_level(liq_result *res, float dither_level)
 {
     if (!CHECK_STRUCT_TYPE(res, liq_result)) return LIQ_INVALID_POINTER;
@@ -1014,8 +992,10 @@ static float remap_to_palette(liq_image *const input_image, unsigned char *const
     viter_state average_color[(VITER_CACHE_LINE_GAP+map->colors) * max_threads];
     viter_init(map, max_threads, average_color);
 
-    #pragma omp parallel for if (rows*cols > 3000) \
-        schedule(static) default(none) shared(average_color) reduction(+:remapping_error)
+    #pragma omp parallel for if (rows * cols > 3000) \
+        schedule(static) default(none) \
+        shared(input_image, output_pixels, map, n, average_color, min_opaque_val, cols, rows) \
+        reduction(+:remapping_error)
     for(int row = 0; row < rows; ++row) {
         const f_pixel *const row_pixels = liq_image_get_row_f(input_image, row);
         unsigned int last_match=0;
